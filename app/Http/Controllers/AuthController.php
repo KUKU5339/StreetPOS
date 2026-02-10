@@ -46,12 +46,6 @@ class AuthController extends Controller
 
     // Handle register
     public function register(Request $request) {
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|confirmed|min:6',
-        ]);
-
         try {
             if (\Illuminate\Support\Facades\App::environment('production')) {
                 try {
@@ -63,6 +57,12 @@ class AuthController extends Controller
                     \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
                 }
             }
+
+            $data = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|confirmed|min:6',
+            ]);
 
             $user = User::create([
                 'name' => $data['name'],
