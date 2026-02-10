@@ -52,15 +52,30 @@ class AuthController extends Controller
             'password' => 'required|confirmed|min:6',
         ]);
 
-        $user = User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-        ]);
+        try {
+            if (\Illuminate\Support\Facades\App::environment('production')) {
+                try {
+                    \Illuminate\Support\Facades\DB::connection()->getPdo();
+                } catch (\Throwable $e) {
+                    \Illuminate\Support\Facades\Log::error('db connect error: ' . $e->getMessage());
+                }
+                if (!\Illuminate\Support\Facades\Schema::hasTable('users')) {
+                    \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+                }
+            }
 
-        Auth::login($user);
+            $user = User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+            ]);
 
-        return redirect('/')->with('success', 'Account created!');
+            Auth::login($user);
+            return redirect('/')->with('success', 'Account created!');
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error('register error: ' . $e->getMessage());
+            return back()->withErrors(['email' => 'Registration failed. Please check database configuration.'])->withInput();
+        }
     }
 
     // Logout
