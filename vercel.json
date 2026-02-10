@@ -1,6 +1,12 @@
 {
     "version": 2,
     "framework": null,
+    "outputDirectory": "public",
+    "buildCommand": "npm run build",
+    "builds": [
+        { "src": "api/index.php", "use": "vercel-php@0.7.4" },
+        { "src": "public/**", "use": "@vercel/static" }
+    ],
     "functions": {
         "api/index.php": { "runtime": "vercel-php@0.7.4" }
     },
@@ -44,7 +50,9 @@
 
         "DB_CONNECTION": "pgsql",
         "DB_URL": "",
-        "SUPABASE_URL": "https://qamvxivfimdgyshdmbta.supabase.co",
-        "SUPABASE_STORAGE_BUCKET": "products"
+        "SUPABASE_URL": "https://jbxuzfbpgcsosuiehmsz.supabase.co",
+        "SUPABASE_STORAGE_BUCKET": "products",
+        "VITE_SUPABASE_URL": "https://jbxuzfbpgcsosuiehmsz.supabase.co",
+        "VITE_SUPABASE_ANON_KEY": "sb_publishable_p1Y_vlB0ICibE-5asof7Gw_cHt0kQiE"
     }
 }
